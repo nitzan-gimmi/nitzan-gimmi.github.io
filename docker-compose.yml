@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  davar-engine:
+    build: .
+    ports:
+      - "8000:8000"
+    command: ["python", "davar_dashboard_api.py"]
+    volumes:
+      - .:/app
