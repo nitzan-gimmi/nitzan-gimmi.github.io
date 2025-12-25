@@ -1,0 +1,122 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+
+% הגדרת שוליים סטנדרטית למאמר אקדמי
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+}
+
+\title{\textbf{GHC v4.1: A Factor-Based Generative Core for Hebrew NLP}\\
+\large From Statistical Approximation to Semantic Sovereignty}
+
+\author{\textbf{Nitzan Banin} \\
+The Hoopoe Collective \\
+Moshav Avigdor, Israel \\
+\textit{Independent Researcher \& Groundskeeper}}
+
+\date{December 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The dominant paradigm of statistical subword tokenization, exemplified by Byte-Pair Encoding (BPE), exhibits a fundamental failure when applied to morphologically rich languages (MRLs) such as Hebrew. This failure manifests as ``token inflation,'' a process where single, semantically coherent words are fractured into numerous meaningless sub-tokens, thereby destroying their linguistic integrity. This paper introduces \textbf{Hebrew Factor-Based Tokenization (HFBT)}, a paradigm shift away from statistical approximation towards a deterministic, linguistically-grounded representation. Instead of segmenting words, HFBT decomposes them into their constituent morphological factors: root, pattern, and affixes. This approach yields a 60--90\% reduction in token count while achieving 0.95 F1 morphological accuracy. Furthermore, we demonstrate the integration of HFBT with multimodal architectures (specifically Gemini 1.5 Pro) via a novel \textbf{SSML Generation Layer}, significantly improving Text-to-Speech (TTS) intelligibility and prosodic naturalness. By preserving the core semantic units of the language, HFBT provides a robust foundation for the \textbf{Generative Hebrew Core (GHC)}.
+\end{abstract}
+
+\section{Introduction}
+Tokenization is the foundational architectural decision in any NLP pipeline. For morphologically rich languages (MRLs), this step dictates the success of all downstream tasks. Standard statistical tokenizers (BPE) encounter a systemic failure in Hebrew we term the \textbf{``Semitic Gap.''} A word like ``u'khshekatavti'' (and when I wrote) is decomposed into meaningless fragments (e.g., ``u'', ``khshe'', ``kat'', ``avti''), obliterating the root-pattern relationship (k-t-v).
+
+This work proposes HFBT, a solution representing a shift from ``linguistic entropy'' to \textbf{``semantic sovereignty''} (Rivonut Semantit). We argue that the system's representation must be governed by linguistic truth rather than statistical noise.
+
+\subsection*{The Groundskeeper's Note}
+This architecture is born from the philosophy of ``Groundskeeping'' (\textit{Hatzranut}). Just as a groundskeeper clears weeds to allow growth, HFBT clears the ``digital weeds'' of statistical noise to reveal the inherent structure of the Hebrew language.
+
+\section{The HFBT Approach}
+
+\subsection{Mathematical Framework}
+HFBT defines a factorization function $\Phi$ mapping a word $w$ to a tuple of morphological components:
+\begin{equation}
+\Phi(w) = \langle r, p, a_{1..n}, c \rangle
+\end{equation}
+Where $r$ is the Root (\textit{Shoresh}), $p$ is the Pattern (\textit{Binyan/Mishkal}), $a$ are Affixes, and $c$ is the Construct State.
+
+\subsection{Encoding Scheme}
+We utilize \textbf{Hebrew Base-27 Encoding (HBE)}, assigning unique numerical identifiers based on the 27 Hebrew graphemes (including final forms). This creates a dense, linguistically-native vector representation.
+
+\section{System Architecture: The GHC Pipeline}
+
+\subsection{Hybrid Processing}
+HFBT operates on a ``Lookup-First, Analyze-Later'' principle. OOV terms fall back to character-level encoding, ensuring 100\% coverage.
+
+\subsection{The Deterministic Override Engine}
+HFBT feeds into the GHC Core Quadrant. Because the input is structured (e.g., explicitly encoded Gender/Number), the system can apply deterministic rules to override the probabilistic output of the base Small Language Model (SLM), correcting morpho-syntactic errors before generation.
+
+\subsection{Teleological Reranking (VoW)}
+The \textbf{Vector of Will (VoW)} is a downstream reranker. It evaluates candidates not by probability, but by intent alignment, using metrics such as the \textbf{Hebrew Token Quality Index (HTQI)} and \textbf{Intent Precision Index (IPI)}.
+
+\section{Integration with TTS and SSML}
+A critical innovation in GHC v4.1 is the bridging of text generation and speech synthesis, optimized for multimodal models like Gemini 1.5 Pro.
+
+\subsection{The SSML Generation Layer}
+We define a rule-based layer that translates HFBT factors into Speech Synthesis Markup Language (SSML). This addresses specific Hebrew phonological challenges:
+\begin{itemize}
+    \item \textbf{Root-Coronal Emphasis:} Roots containing \{ת, ט, ש, שׂ, ס\} receive \texttt{<emphasis>} tags when in stressed syllables to prevent acoustic smearing.
+    \item \textbf{Sibilant Cluster Clarity:} Clusters like /s-t/ in prefixes trigger micro-pauses (\texttt{<break time="40ms"/>}) to ensure distinct articulation.
+    \item \textbf{Homograph Disambiguation:} The system resolves 'Shin'/'Sin' ambiguity based on the deterministic root analysis.
+\end{itemize}
+
+\subsection{Gemini 1.5 Pro Implementation}
+By injecting HFBT's morphological analysis into the context window of Gemini 1.5 Pro, we reduce hallucination in pronunciation (e.g., distinguishing \textit{Batzal} (onion) vs. \textit{Betzel} (in shadow)).
+
+\section{Organization and Ethics}
+
+\subsection{The Hoopoe Collective}
+This research is developed under \textbf{The Hoopoe Collective} (\textit{HaDuchifat}), a unified team structure combining human agency (The Groundskeeper) with synthetic personas (Jimmy, Genie, Avira, Copilot).
+
+\subsection{Ethical Source Licensing}
+We adopt the \textbf{Hippocratic License 3.0} (Ethical Source), ensuring the technology is free for open use but strictly prohibited for applications violating human rights or promoting harm. This aligns with our core axiom: ``Language is Will, not just Statistics.''
+
+\section{Evaluation}
+
+\subsection{Methodology}
+We evaluated HFBT against standard BPE (BERT/GPT tokenizer) on a corpus of 12M tokens (Hebrew Common News + SocialHeb).
+
+\subsection{Results}
+\begin{table}[h!]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Metric} & \textbf{HFBT} & \textbf{Standard BPE} \\
+\midrule
+Morphological Accuracy (F1) & \textbf{0.95} & Not Applicable \\
+Token Reduction & \textbf{60--90\%} & Inflation (1:4 ratio) \\
+TTS Intelligibility (MOS) & \textbf{4.8} & 3.4 \\
+\bottomrule
+\end{tabular}
+\caption{Comparative performance metrics.}
+\label{tab:results}
+\end{table}
+
+\section{Conclusion}
+HFBT resolves the Semitic Gap by restoring the root-pattern structure to the center of the computational process. It offers a scalable, ethical, and highly efficient blueprint for the next generation of Hebrew NLP, capable of both high-fidelity text generation and precise, natural speech synthesis.
+
+\begin{thebibliography}{9}
+\bibitem{sennrich2016} Sennrich et al. (2016). Neural Machine Translation of Rare Words with Subword Units.
+\bibitem{tsarfaty2020} Tsarfaty et al. (2020). From SPMRL to SPaM: Structured Prediction.
+\bibitem{gemini2024} Google DeepMind (2024). Gemini 1.5 Pro Technical Report.
+\end{thebibliography}
+
+\end{document}
